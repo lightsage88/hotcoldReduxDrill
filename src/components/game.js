@@ -1,28 +1,31 @@
 import React from 'react';
-
+import {connect} from 'react-redux';
 import Header from './header';
 import GuessSection from './guess-section';
 import StatusSection from './status-section';
 import InfoSection from './info-section';
 
-export default class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      guesses: [],
-      feedback: 'Make your guess!',
-      auralStatus: '',
-      correctAnswer: Math.round(Math.random() * 100) + 1
-    };
-  }
+import {pressReset} from '../actions';
+
+export class Game extends React.Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     guesses: [],
+  //     feedback: 'Make your guess!',
+  //     auralStatus: '',
+  //     correctAnswer: Math.round(Math.random() * 100) + 1
+  //   };
+  // }
 
   restartGame() {
-    this.setState({
-      guesses: [],
-      feedback: 'Make your guess!',
-      auralStatus: '',
-      correctAnswer: Math.floor(Math.random() * 100) + 1
-    });
+    // this.setState({
+    //   guesses: [],
+    //   feedback: 'Make your guess!',
+    //   auralStatus: '',
+    //   correctAnswer: Math.floor(Math.random() * 100) + 1
+    // });
+    this.props.dispatch(pressReset());
   }
 
   makeGuess(guess) {
@@ -77,7 +80,7 @@ export default class Game extends React.Component {
   }
 
   render() {
-    const { feedback, guesses, auralStatus } = this.state;
+    const { feedback, guesses, auralStatus } = Game.defaultProps;
     const guessCount = guesses.length;
 
     return (
@@ -101,3 +104,28 @@ export default class Game extends React.Component {
     );
   }
 }
+
+//possible conflict between defaultProps and state with
+//correctAnswer?
+
+Game.defaultProps = {
+ auralStatus: '',
+correctAnswer: Math.round(Math.random() * 100) + 1,
+feedback: "Make your guess!",
+guesses: []
+};
+// auralStatus: '',
+// correctAnswer: Math.round(Math.random() * 100) + 1,
+// feedback: "Make your guess!",
+// guesses: []
+
+
+
+export const mapStateToProps = state => ({
+  auralStatus: state.auralStatus,
+  correctAnswer: state.correctAnswer,
+  feedback: state.feedback,
+  guesses: state.guesses
+});
+
+export default connect(mapStateToProps)(Game);
